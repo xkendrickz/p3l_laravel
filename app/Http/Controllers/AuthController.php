@@ -38,7 +38,7 @@ class AuthController extends Controller
 
         return response([
             'message' => 'Register Success',
-            'user' => $user
+            'data' => $user
         ],200); //return data user dalam bentuk json
     }
 
@@ -61,7 +61,7 @@ class AuthController extends Controller
 
         return response([
             'message' => 'Authenticated',
-            'user' => $user,
+            'data' => $user,
             // 'token_type' => 'Bearer',
             // 'access_token' => $token
         ]); //return data user dan token dalam bentuk json

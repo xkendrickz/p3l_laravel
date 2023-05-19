@@ -31,6 +31,8 @@ Route::apiResource('/depositReguler',
 App\Http\Controllers\DepositRegulerController::class);
 Route::apiResource('/depositKelas',
 App\Http\Controllers\DepositKelasController::class);
+Route::apiResource('/bookingGym',
+App\Http\Controllers\BookingGymController::class);
 
 Route::post('register', 'App\Http\Controllers\AuthController@register');
 Route::post('login', 'App\Http\Controllers\AuthController@login');
