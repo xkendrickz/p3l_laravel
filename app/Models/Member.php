@@ -3,40 +3,42 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class Member extends Model
+class Member extends Authenticatable
 {
-    use HasFactory;
+    use HasFactory, Notifiable;
 
-	protected $table = 'member';
+    protected $table = 'member';
     protected $primaryKey = 'id_member';
-	public $timestamps = false;
+    public $timestamps = false;
+
     /**
-     * fillable
-     * 
+     * The attributes that are mass assignable.
+     *
      * @var array
      */
     protected $fillable = [
         'id_member',
-		'member_id',
-		'nama_member',
-		'alamat',
-		'tanggal_lahir',
-		'tanggal_daftar',
-		'telepon',
-		'email',
-		'status',
-		'sisa_deposit_reguler',
-		'sisa_deposit_paket',
-		'username',
-		'password',
+        'member_id',
+        'nama_member',
+        'alamat',
+        'tanggal_lahir',
+        'tanggal_daftar',
+        'telepon',
+        'email',
+        'status',
+        'sisa_deposit_reguler',
+        'sisa_deposit_paket',
+        'username',
+        'password',
     ];
 
-	/**
+    /**
      * The attributes that should be hidden for serialization.
      *
-     * @var array<int, string>
+     * @var array
      */
     protected $hidden = [
         'password',

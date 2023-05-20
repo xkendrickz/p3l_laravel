@@ -3,14 +3,17 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 
-class Pegawai extends Model
+class Pegawai extends Authenticatable
 {
-    use HasFactory;
+    use HasFactory, Notifiable;
 
     protected $table = 'pegawai';
     protected $primaryKey = 'id_pegawai';
+    public $timestamps = false;
+
     /**
      * fillable
      * 
@@ -22,8 +25,16 @@ class Pegawai extends Model
         'nama_pegawai',
         'tanggal_lahir',
         'username',
-        'password'
+        'password',
     ];
 
-
+    /**
+     * The attributes that should be hidden for serialization.
+     *
+     * @var array
+     */
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
 }

@@ -40,6 +40,21 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+
+		'member'  => [
+			'driver'  => 'session',
+			'provider' => 'members',
+		],
+
+		'pegawai' => [
+			'driver' => 'session',
+			'provider' => 'pegawais',
+		],
+
+		'instruktur' => [
+			'driver' => 'session',
+			'provider' => 'instrukturs',
+		],
     ],
 
     /*
@@ -65,10 +80,20 @@ return [
             'model' => App\Models\User::class,
         ],
 
-        // 'users' => [
-        //     'driver' => 'database',
-        //     'table' => 'users',
-        // ],
+        'members' => [
+            'driver' => 'eloquent',
+            'model'  => App\Models\Member::class,
+        ],
+
+		'pegawais' => [
+			'driver' => 'eloquent',
+			'model' => App\Models\Pegawai::class,
+		],
+		
+		'instrukturs' => [
+			'driver' => 'eloquent',
+			'model' => App\Models\Instruktur::class,
+		],
     ],
 
     /*

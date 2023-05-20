@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+Route::apiResource('/instruktur',
+App\Http\Controllers\InstrukturController::class);
 Route::apiResource('/member',
 App\Http\Controllers\MemberController::class);
 Route::apiResource('/pegawai',
@@ -35,7 +37,8 @@ Route::apiResource('/bookingGym',
 App\Http\Controllers\BookingGymController::class);
 
 Route::delete('bookingGym/{id_member}/{tanggal}', 'App\Http\Controllers\BookingGymController@destroy');
-Route::post('login', 'App\Http\Controllers\AuthController@login');
+Route::post('loginAndroid', 'App\Http\Controllers\AuthController@loginAndroid');
+Route::post('loginWeb', 'App\Http\Controllers\AuthController@loginWeb');
 Route::get('indexAktivasi', 'App\Http\Controllers\ResetController@indexAktivasi');
 Route::get('indexDeposit', 'App\Http\Controllers\ResetController@indexDeposit');
 Route::post('resetMember', 'App\Http\Controllers\ResetController@resetMember');

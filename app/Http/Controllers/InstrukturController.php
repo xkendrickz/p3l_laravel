@@ -43,27 +43,32 @@ class InstrukturController extends Controller
      * @return void
      */
     public function store(Request $request)
-    {
-        //Validasi Formulir
-        $validator = Validator::make($request->all(), [
-            'nama_instruktur' => 'required',
-            'tanggal_lahir' => 'required',
-            'username' => 'required'
-        ]);
+	{
+		// Validasi Formulir
+		$validator = Validator::make($request->all(), [
+			'nama_instruktur' => 'required',
+			'tanggal_lahir' => 'required',
+			'username' => 'required',
+			'password' => 'required'
+		]);
 
-        if ($validator->fails()){
-            return response()->json($validator->errors(), 422);
-        }
+		if ($validator->fails()) {
+			return response()->json($validator->errors(), 422);
+		}
 
-        //Fungsi Post ke Database
-        $instruktur = Instruktur::create([
-            'nama_instruktur'   => $request->nama_instruktur,
-            'tanggal_lahir'      => $request->nama_manager,
-            'username'    => $request->jumlah_pegawai
-        ]);
+		// Create new Instruktur record
+		$instruktur = Instruktur::create([
+			'nama_instruktur' => $request->nama_instruktur,
+			'tanggal_lahir' => $request->tanggal_lahir,
+			'jumlah_hadir' => 0,
+			'jumlah_libur' => 0,
+			'waktu_terlambat' => 0,
+			'username' => $request->username,
+			'password' => bcrypt($request->password) // Assuming you're storing hashed passwords
+		]);
 
-        return new InstrukturResource(true, 'Data Instruktur Berhasil Ditambahkan!', $instruktur);
-    }
+		return new InstrukturResource(true, 'Data Instruktur Berhasil Ditambahkan!', $instruktur);
+	}
 
     public function destroy($id)
     {

@@ -4,66 +4,94 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Validator;
-use Illuminate\Support\Facades\auth;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
-use App\Models\User;
-use Illuminate\Support\Facades\Session;
-use Illuminate\Validation\Rules\Password;
+use App\Models\Member;
+use App\Models\Instruktur;
+use App\Models\Pegawai;
 
 class AuthController extends Controller
 {
-	public function register(Request $request){
-        $registrationData = $request->all(); //mengambil seluruh data input dan menyimpan dalam variabel registrationData
-
-        $validate = Validator::make($registrationData, [
-            'username' => 'required',
-            'password' => 'required',
-            'email' => 'required',
-            'tgglLahir' => 'required',
-            'telepon' => 'required',
-
-			// 'username' => 'required|max:60',
-            // 'password' => 'required',
-            // 'email' => 'required|email:rfc,dns|unique:users',
-            // 'tgglLahir' => 'required',
-            // 'telepon' => 'required',
-        ]); //rule validasi input saat register
-
-        if($validate->fails()) //mengecek apakah inputan sudah sesuai denga rule validasi
-            return response(['message' => $validate->errors()],400); //mengembalikan error validasi input
-
-        $registrationData['password'] = bcrypt($request->password); //untuk meng-enkripsi password
-
-        $user = User::create($registrationData); //membuat user baru
-
-        return response([
-            'message' => 'Register Success',
-            'data' => $user
-        ],200); //return data user dalam bentuk json
-    }
-
-    public function login(Request $request){
+	public function loginWeb(Request $request)
+    {
         $loginData = $request->all();
 
         $validate = Validator::make($loginData, [
-            'username' => 'required',
+            'username' => [
+                'required',
+                Rule::exists('pegawai')->where(function ($query) use ($loginData) {
+                    $query->where('username', $loginData['username']);
+                }),
+            ],
             'password' => 'required',
         ]);
 
-        if($validate->fails())
+        if ($validate->fails()) {
             return response(['message' => $validate->errors()], 400);
-        
-        if(!Auth::attempt($loginData))
-        return response(['message' => 'Invalid Credentials'], 401); //mengembalikan error gagal login
+        }
 
-        $user = Auth::user();
-        // $token = $user->createToken('Authentication Token')->accessToken; //generate token
+        if (!Auth::guard('pegawai')->attempt($loginData)) {
+            return response(['message' => 'Invalid Credentials'], 401);
+        }
+
+        $user = Auth::guard('pegawai')->user();
 
         return response([
             'message' => 'Authenticated',
             'data' => $user,
-            // 'token_type' => 'Bearer',
-            // 'access_token' => $token
-        ]); //return data user dan token dalam bentuk json
+        ]);
     }
+
+
+    public function loginAndroid(Request $request)
+	{
+		$loginData = $request->all();
+
+		$validate = Validator::make($loginData, [
+			'username' => [
+				'required',
+				function ($attribute, $value, $fail) use ($loginData) {
+					$validMember = Member::where('username', $value)->exists();
+					$validInstruktur = Instruktur::where('username', $value)->exists();
+					$validPegawai = Pegawai::where('username', $value)->where('id_role', 2)->exists();
+
+					if (!$validMember && !$validInstruktur && !$validPegawai) {
+						$fail('Invalid Credentials');
+					}
+				},
+			],
+			'password' => 'required',
+		]);
+
+		if ($validate->fails()) {
+			return response(['message' => $validate->errors()], 400);
+		}
+
+		$credentials = ['username' => $loginData['username'], 'password' => $loginData['password']];
+
+		if (Auth::guard('member')->attempt($credentials)) {
+			$user = Auth::guard('member')->user();
+			return response([
+				'message' => 'Authenticated as Member',
+				'userType' => 'member',
+				'data' => $user,
+			]);
+		} elseif (Auth::guard('instruktur')->attempt($credentials)) {
+			$user = Auth::guard('instruktur')->user();
+			return response([
+				'message' => 'Authenticated as Instruktur',
+				'userType' => 'instruktur',
+				'data' => $user,
+			]);
+		} elseif (Auth::guard('pegawai')->attempt($credentials)) {
+			$user = Auth::guard('pegawai')->user();
+			return response([
+				'message' => 'Authenticated as Pegawai',
+				'userType' => 'pegawai',
+				'data' => $user,
+			]);
+		} else {
+			return response(['message' => 'Invalid Credentials'], 401);
+		}
+	}
 }
