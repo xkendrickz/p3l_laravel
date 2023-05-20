@@ -34,7 +34,7 @@ App\Http\Controllers\DepositKelasController::class);
 Route::apiResource('/bookingGym',
 App\Http\Controllers\BookingGymController::class);
 
-Route::post('register', 'App\Http\Controllers\AuthController@register');
+Route::delete('bookingGym/{id_member}/{tanggal}', 'App\Http\Controllers\BookingGymController@destroy');
 Route::post('login', 'App\Http\Controllers\AuthController@login');
 Route::get('indexAktivasi', 'App\Http\Controllers\ResetController@indexAktivasi');
 Route::get('indexDeposit', 'App\Http\Controllers\ResetController@indexDeposit');

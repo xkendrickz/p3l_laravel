@@ -6,6 +6,7 @@ use App\Models\BookingGym;
 use App\Models\Member;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Carbon\Carbon;
 
 class BookingGymController extends Controller
 {
@@ -55,4 +56,60 @@ class BookingGymController extends Controller
 			'data' => $bookingGym
 		], 200);
 	}
+
+	public function show($id_member)
+	{
+		$bookingGyms = BookingGym::where('id_member', $id_member)
+			->where('status', 0)
+			->get();
+
+		if ($bookingGyms->isEmpty()) {
+			return response([
+				'message' => 'No Booking Gym Found',
+				'data' => []
+			], 404);
+		}
+
+		return response([
+			'message' => 'Retrieve Booking Gym Success',
+			'data' => $bookingGyms
+		], 200);
+	}
+
+	public function destroy($id_member, $tanggal)
+	{
+		$bookingGym = BookingGym::where('id_member', $id_member)
+			->where('tanggal', $tanggal)
+			->first();
+
+		if (is_null($bookingGym)) {
+			return response([
+				'message' => 'Booking Gym Not Found',
+				'data' => null
+			], 404);
+		}
+
+		// Calculate the minimum allowed date (h-1)
+		$minimumDate = date('Y-m-d', strtotime('-1 day'));
+
+		if ($tanggal <= $minimumDate) {
+			if ($bookingGym->delete()) {
+				return response([
+					'message' => 'Cancel Booking Gym Success',
+					'data' => $bookingGym
+				], 200);
+			} else {
+				return response([
+					'message' => 'Cancel Booking Gym Failed',
+					'data' => null
+				], 400);
+			}
+		} else {
+			return response([
+				'message' => 'Cancel is only allowed at least one day in advance',
+				'data' => null
+			], 400);
+		}
+	}
+
 }
