@@ -14,6 +14,9 @@ class JadwalHarianController extends Controller
 {
     public function index()
 	{
+		$startDate = date('Y-m-d'); // Get current date
+		$endDate = date('Y-m-d', strtotime('+7 days')); // Get date 7 days from now
+
 		$data = DB::table('jadwal_harian')
 			->select(
 				'jadwal_harian.*',
@@ -28,6 +31,7 @@ class JadwalHarianController extends Controller
 			->join('instruktur', 'jadwal_umum.id_instruktur', '=', 'instruktur.id_instruktur')
 			->join('kelas', 'jadwal_umum.id_kelas', '=', 'kelas.id_kelas')
 			->leftJoin('izin', 'jadwal_harian.id_jadwal_harian', '=', 'izin.id_jadwal_harian')
+			->whereBetween('jadwal_harian.hari', [$startDate, $endDate]) // Filter for the next 7 days
 			->get();
 
 		foreach ($data as &$row) {
@@ -50,7 +54,6 @@ class JadwalHarianController extends Controller
 
 	public function store()
 	{
-		// JadwalHarian::truncate();
 		$today = Carbon::today();
 
 		$jadwalUmum = JadwalUmum::orderBy('hari')->get();
