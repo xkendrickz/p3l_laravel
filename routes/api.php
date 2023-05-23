@@ -42,6 +42,7 @@ App\Http\Controllers\PresensiKelasController::class);
 Route::apiResource('/presensiGym',
 App\Http\Controllers\PresensiGymController::class);
 
+Route::get('cetakStruk/{id}', 'App\Http\Controllers\PresensiKelasController@cetakStruk');
 Route::delete('bookingGym/{id_member}/{tanggal}', 'App\Http\Controllers\BookingGymController@destroy');
 Route::post('loginAndroid', 'App\Http\Controllers\AuthController@loginAndroid');
 Route::post('loginWeb', 'App\Http\Controllers\AuthController@loginWeb');
