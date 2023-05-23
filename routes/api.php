@@ -37,6 +37,10 @@ Route::apiResource('/bookingGym',
 App\Http\Controllers\BookingGymController::class);
 Route::apiResource('/presensiInstruktur',
 App\Http\Controllers\PresensiInstrukturController::class);
+Route::apiResource('/presensiKelas',
+App\Http\Controllers\PresensiKelasController::class);
+Route::apiResource('/presensiGym',
+App\Http\Controllers\PresensiGymController::class);
 
 Route::delete('bookingGym/{id_member}/{tanggal}', 'App\Http\Controllers\BookingGymController@destroy');
 Route::post('loginAndroid', 'App\Http\Controllers\AuthController@loginAndroid');
