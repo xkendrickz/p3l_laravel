@@ -24,7 +24,7 @@ class DepositRegulerController extends Controller
 		$bonus = 0;
 		
 		$member = Member::find($id_member);
-		$sisa_deposit = $member->sisa_deposit;
+		$sisa_deposit = $member->sisa_deposit_reguler;
 
 		// Check if minimum sisa deposit is met and add bonus if applicable
 		if ($sisa_deposit >= 500000 && $deposit >= 3000000) {
@@ -52,7 +52,7 @@ class DepositRegulerController extends Controller
 		$depositReguler->save();
 
 		// Update member's sisa deposit
-		$member->sisa_deposit = $total_deposit_reguler;
+		$member->sisa_deposit_reguler = $total_deposit_reguler;
 		$member->timestamps = false;
 		$member->save();
 

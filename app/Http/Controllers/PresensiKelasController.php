@@ -77,6 +77,41 @@ class PresensiKelasController extends Controller
 		}
 	}
 
+	public function update($id)
+{
+    try {
+        // Update booking_kelas status to 1
+        DB::table('booking_kelas')
+            ->where('id_booking_kelas', $id)
+            ->update(['status' => 1]);
+
+        // Generate no_struk
+        $now = Carbon::now();
+        $no_struk = $now->format('y.m') . '.' . $id;
+
+        // Save data in presensi_kelas
+        $presensiKelasData = [
+            'id_booking_kelas' => $id,
+            'no_struk' => $no_struk,
+            'tanggal' => $now,
+        ];
+        DB::table('presensi_kelas')->insert($presensiKelasData);
+
+        $response = [
+            'message' => 'Data Presensi Kelas Berhasil Diupdate!',
+        ];
+
+        return response()->json($response, 200);
+    } catch (\Exception $e) {
+        $response = [
+            'message' => 'Failed to update data: ' . $e->getMessage(),
+        ];
+
+        return response()->json($response, 500);
+    }
+}
+
+
 	public function cetakStruk($id)
 	{
 		$data = DB::table('presensi_kelas')
