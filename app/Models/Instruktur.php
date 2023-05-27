@@ -23,8 +23,6 @@ class Instruktur extends Authenticatable
         'id_instruktur',
         'nama_instruktur',
         'tanggal_lahir',
-        'jumlah_hadir',
-        'jumlah_libur',
         'waktu_terlambat',
         'username',
         'password',

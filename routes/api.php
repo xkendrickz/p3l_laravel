@@ -42,6 +42,7 @@ App\Http\Controllers\PresensiKelasController::class);
 Route::apiResource('/presensiGym',
 App\Http\Controllers\PresensiGymController::class);
 
+Route::get('laporanKinerjaInstruktur/{bulan}/{tahun}', 'App\Http\Controllers\LaporanController@laporanKinerjaInstruktur');
 Route::get('laporanAktivitasGym/{bulan}/{tahun}', 'App\Http\Controllers\LaporanController@laporanAktivitasGym');
 Route::get('dropdownAktivitasGym', 'App\Http\Controllers\LaporanController@dropdownAktivitasGym');
 Route::get('laporanAktivitasKelas/{bulan}/{tahun}', 'App\Http\Controllers\LaporanController@laporanAktivitasKelas');

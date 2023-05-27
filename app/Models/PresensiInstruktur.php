@@ -18,6 +18,7 @@ class PresensiInstruktur extends Model
      * @var array
      */
     protected $fillable = [
+		'id_presensi_instruktur',
         'id_jadwal_harian',
         'mulai_kelas',
         'selesai_kelas',

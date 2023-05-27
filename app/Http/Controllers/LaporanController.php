@@ -10,6 +10,7 @@ use App\Models\DepositKelas;
 use App\Models\DepositReguler;
 use App\Models\Kelas;
 use App\Models\Instruktur;
+use App\Models\PresensiInstruktur;
 use App\Models\BookingGym;
 use App\Models\BookingKelas;
 use App\Models\Izin;
@@ -196,4 +197,34 @@ class LaporanController extends Controller
 
 		return response()->json($response, 200);
 	}
+
+	public function laporanKinerjaInstruktur($bulan, $tahun)
+{
+    // Get the current date
+    $currentDate = date('d F Y');
+
+    // Get the attendance count per instructor
+    $data = Instruktur::select('instruktur.nama_instruktur')
+        ->selectRaw('COUNT(presensi_instruktur.id_presensi_instruktur) as jumlah_hadir')
+        ->selectRaw('COUNT(izin.id_izin) as jumlah_libur')
+        ->selectRaw('SUM(instruktur.waktu_terlambat) as waktu_terlambat')
+        ->leftJoin('jadwal_umum', 'instruktur.id_instruktur', '=', 'jadwal_umum.id_instruktur')
+        ->leftJoin('jadwal_harian', 'jadwal_umum.id_jadwal_umum', '=', 'jadwal_harian.id_jadwal_umum')
+        ->leftJoin('presensi_instruktur', 'jadwal_harian.id_jadwal_harian', '=', 'presensi_instruktur.id_jadwal_harian')
+        ->leftJoin('izin', 'jadwal_harian.id_jadwal_harian', '=', 'izin.id_jadwal_harian')
+        ->whereMonth('jadwal_harian.hari', $bulan)
+        ->whereYear('jadwal_harian.hari', $tahun)
+        ->groupBy('instruktur.id_instruktur', 'instruktur.nama_instruktur') // Include the column in the GROUP BY clause
+        ->get();
+
+    // Prepare the response data including the instructor name, attendance count, leave count, and late timing
+    $response = [
+        'data' => $data,
+        'bulan' => Carbon::createFromDate($tahun, $bulan)->format('F'),
+        'tahun' => $tahun,
+        'tanggal' => $currentDate,
+    ];
+
+    return response()->json($response, 200);
+}
 }
