@@ -4,9 +4,15 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 use App\Models\Aktivasi;
 use App\Models\DepositKelas;
 use App\Models\DepositReguler;
+use App\Models\Kelas;
+use App\Models\Instruktur;
+use App\Models\BookingKelas;
+use App\Models\Izin;
+use App\Models\JadwalHarian;
 
 class LaporanController extends Controller
 {
@@ -46,7 +52,7 @@ class LaporanController extends Controller
 
 			// Prepare the monthly data
 			$monthlyData[] = [
-				'nama_bulan' => Carbon::createFromDate($month)->format('F'),
+				'nama_bulan' => Carbon::createFromDate($tahun, $month, 1)->format('F'),
 				'total_aktivasi' => $totalAktivasi,
 				'total_deposit' => $totalDeposit,
 				'total_bulanan' => $totalBulanan,
@@ -67,7 +73,7 @@ class LaporanController extends Controller
 		return response()->json($response, 200);
 	}
 
-	public function exposedDropdown()
+	public function dropdownPendapatan()
 	{
 		$years = [];
 
@@ -101,4 +107,50 @@ class LaporanController extends Controller
 
 		return response()->json($response, 200);
 	}
+
+	public function laporanAktivitasKelas($bulan, $tahun)
+	{
+		// Get the current date
+		$currentDate = date('d F Y');
+
+		$data = JadwalHarian::select('kelas.nama_kelas', 'instruktur.nama_instruktur')
+			->addSelect(DB::raw('COUNT(booking_kelas.id_booking_kelas) as total_peserta'))
+			->addSelect(DB::raw('COUNT(izin.id_izin) as total_libur'))
+			->join('jadwal_umum', 'jadwal_harian.id_jadwal_umum', '=', 'jadwal_umum.id_jadwal_umum')
+			->join('instruktur', 'jadwal_umum.id_instruktur', '=', 'instruktur.id_instruktur')
+			->join('kelas', 'jadwal_umum.id_kelas', '=', 'kelas.id_kelas')
+			->leftJoin('booking_kelas', 'jadwal_harian.id_jadwal_harian', '=', 'booking_kelas.id_jadwal_harian')
+			->leftJoin('izin', 'jadwal_harian.id_jadwal_harian', '=', 'izin.id_jadwal_harian')
+			->whereYear('jadwal_harian.hari', $tahun)
+			->whereMonth('jadwal_harian.hari', $bulan)
+			->groupBy('kelas.nama_kelas', 'instruktur.nama_instruktur')
+			->orderBy('kelas.nama_kelas', 'asc')
+			->get();
+
+		// Prepare the response data including the total yearly amount
+		$response = [
+			'data' => $data,
+			'bulan' => Carbon::createFromDate($bulan)->format('F'),
+			'tahun' => $tahun,
+			'tanggal' => $currentDate,
+		];
+
+		return response()->json($response, 200);
+	}
+
+	public function dropdownAktivitasKelas()
+	{
+		$months = JadwalHarian::selectRaw('MONTH(hari) as month')->distinct()->get();
+		$years = JadwalHarian::selectRaw('YEAR(hari) as year')->distinct()->get();
+
+		$response = [
+			'data' => [
+				'months' => $months,
+				'years' => $years,
+			],
+		];
+
+		return response()->json($response, 200);
+	}
+
 }

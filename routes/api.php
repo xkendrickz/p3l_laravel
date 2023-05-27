@@ -43,7 +43,9 @@ Route::apiResource('/presensiGym',
 App\Http\Controllers\PresensiGymController::class);
 
 Route::get('laporanPendapatan/{tahun}', 'App\Http\Controllers\LaporanController@laporanPendapatan');
-Route::get('exposedDropdown', 'App\Http\Controllers\LaporanController@exposedDropdown');
+Route::get('laporanAktivitasKelas/{bulan}/{tahun}', 'App\Http\Controllers\LaporanController@laporanAktivitasKelas');
+Route::get('dropdownAktivitasKelas', 'App\Http\Controllers\LaporanController@dropdownAktivitasKelas');
+Route::get('dropdownPendapatan', 'App\Http\Controllers\LaporanController@dropdownPendapatan');
 Route::get('cetakStruk/{id}', 'App\Http\Controllers\PresensiKelasController@cetakStruk');
 Route::delete('bookingGym/{id_member}/{tanggal}', 'App\Http\Controllers\BookingGymController@destroy');
 Route::post('loginAndroid', 'App\Http\Controllers\AuthController@loginAndroid');
