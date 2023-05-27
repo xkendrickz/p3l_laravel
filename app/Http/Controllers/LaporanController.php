@@ -10,6 +10,7 @@ use App\Models\DepositKelas;
 use App\Models\DepositReguler;
 use App\Models\Kelas;
 use App\Models\Instruktur;
+use App\Models\BookingGym;
 use App\Models\BookingKelas;
 use App\Models\Izin;
 use App\Models\JadwalHarian;
@@ -153,4 +154,46 @@ class LaporanController extends Controller
 		return response()->json($response, 200);
 	}
 
+	public function laporanAktivitasGym($bulan, $tahun)
+	{
+		// Get the current date
+		$currentDate = date('d F Y');
+
+		// Get the data and total number of members for each date
+		$data = BookingGym::select(DB::raw("DATE_FORMAT(tanggal, '%e %M %Y') as tanggal"), DB::raw('count(id_member) as jumlah_member'))
+        ->whereMonth('tanggal', $bulan)
+        ->whereYear('tanggal', $tahun)
+        ->groupBy('tanggal')
+        ->get();
+
+		// Calculate the total number of members
+		$total = $data->sum('jumlah_member');
+
+		// Prepare the response data including the date, number of members, and total
+		$response = [
+			'data' => $data,
+			'total' => $total,
+			'bulan' => Carbon::createFromDate($bulan)->format('F'),
+			'tahun' => $tahun,
+			'tanggal' => $currentDate,
+		];
+
+		return response()->json($response, 200);
+	}
+
+
+	public function dropdownAktivitasGym()
+	{
+		$months = BookingGym::selectRaw('MONTH(tanggal) as month')->distinct()->get();
+		$years = BookingGym::selectRaw('YEAR(tanggal) as year')->distinct()->get();
+
+		$response = [
+			'data' => [
+				'months' => $months,
+				'years' => $years,
+			],
+		];
+
+		return response()->json($response, 200);
+	}
 }
