@@ -42,6 +42,12 @@ App\Http\Controllers\PresensiKelasController::class);
 Route::apiResource('/presensiGym',
 App\Http\Controllers\PresensiGymController::class);
 
+Route::get('historyInstruktur/{id}', 'App\Http\Controllers\HistoryController@historyInstruktur');
+Route::get('historyMemberPresensi/{id}', 'App\Http\Controllers\HistoryController@historyMemberPresensi');
+Route::get('historyMemberTransaksi/{id}', 'App\Http\Controllers\HistoryController@historyMemberTransaksi');
+Route::get('profilePegawai/{id}', 'App\Http\Controllers\PegawaiController@profilePegawai');
+Route::get('profileMember/{id}', 'App\Http\Controllers\MemberController@profileMember');
+Route::get('profileInstruktur/{id}', 'App\Http\Controllers\InstrukturController@profileInstruktur');
 Route::get('laporanKinerjaInstruktur/{bulan}/{tahun}', 'App\Http\Controllers\LaporanController@laporanKinerjaInstruktur');
 Route::get('laporanAktivitasGym/{bulan}/{tahun}', 'App\Http\Controllers\LaporanController@laporanAktivitasGym');
 Route::get('dropdownAktivitasGym', 'App\Http\Controllers\LaporanController@dropdownAktivitasGym');

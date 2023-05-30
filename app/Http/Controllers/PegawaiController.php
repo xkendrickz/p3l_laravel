@@ -119,4 +119,19 @@ class PegawaiController extends Controller
         $pegawai = Pegawai::findOrfail($id);
         return new PegawaiResource(true, 'Data Pegawai Berhasil Ditampilkan!', $pegawai);
     }
+
+	public function profilePegawai($id)
+	{
+		$member = Pegawai::findOrFail($id);
+
+		$data = [
+			'nama_pegawai' => $member->nama_pegawai,
+			'tanggal_lahir' => $member->tanggal_lahir,
+		];
+
+		return response()->json([
+			'message' => 'Retrieve Member Success',
+			'data' => $data
+		], 200);
+	}
 }

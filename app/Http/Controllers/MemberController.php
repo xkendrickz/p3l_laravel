@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Member;
+use App\Models\Aktivasi;
+use App\Models\DepositKelas;
 use Carbon\Carbon;
 use Validator;
 
@@ -70,4 +72,42 @@ class MemberController extends Controller
 			'user' => $user
 		], 200);
 	}
+
+	public function profileMember($id)
+{
+    $member = Member::findOrFail($id);
+
+    $data = [
+        'nama_member' => $member->nama_member,
+        'alamat' => $member->alamat,
+        'tanggal_lahir' => $member->tanggal_lahir,
+        'telepon' => $member->telepon,
+        'email' => $member->email,
+        'sisa_deposit_reguler' => $member->sisa_deposit_reguler,
+        'sisa_deposit_paket' => $member->sisa_deposit_paket,
+    ];
+
+    $aktivasi = Aktivasi::where('id_member', $id)->first();
+
+    if ($aktivasi) {
+        $data['masa_aktif'] = $aktivasi->masa_aktif;
+    }
+
+    // Join deposit_paket and kelas tables to get nama_kelas
+    $depositPaket = DepositKelas::where('id_member', $id)
+        ->join('kelas', 'deposit_paket.id_kelas', '=', 'kelas.id_kelas')
+        ->select('kelas.nama_kelas')
+        ->first();
+
+    if ($depositPaket) {
+        $data['nama_kelas'] = $depositPaket->nama_kelas;
+    }
+
+    return response()->json([
+        'message' => 'Retrieve Member Success',
+        'data' => $data
+    ], 200);
+}
+
+
 }

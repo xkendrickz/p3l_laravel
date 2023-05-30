@@ -119,4 +119,20 @@ class InstrukturController extends Controller
         $instruktur = Instruktur::findOrfail($id);
         return new InstrukturResource(true, 'Data Instruktur Berhasil Ditampilkan!', $instruktur);
     }
+
+	public function profileInstruktur($id)
+{
+    $member = Instruktur::findOrFail($id);
+
+    $data = [
+        'nama_instruktur' => $member->nama_instruktur,
+        'tanggal_lahir' => $member->tanggal_lahir	,
+        'waktu_terlambat' => $member->waktu_terlambat,
+    ];
+
+    return response()->json([
+        'message' => 'Retrieve Member Success',
+        'data' => $data
+    ], 200);
+}
 }

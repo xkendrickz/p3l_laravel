@@ -9,7 +9,7 @@ class PresensiGym extends Model
 {
     use HasFactory;
 
-	protected $table = 'presensi_kelas';
+	protected $table = 'presensi_gym';
     public $timestamps = false;
 
     /**
@@ -18,6 +18,9 @@ class PresensiGym extends Model
      * @var array
      */
     protected $fillable = [
-        'id_booking_kelas',
+		'id_presensi_gym',
+        'id_booking_gym',
+		'no_struk',
+		'tanggal',
     ];
 }

@@ -18,6 +18,9 @@ class PresensiKelas extends Model
      * @var array
      */
     protected $fillable = [
+		'id_presensi_kelas',
         'id_booking_kelas',
+		'no_struk',
+		'tanggal',
     ];
 }
